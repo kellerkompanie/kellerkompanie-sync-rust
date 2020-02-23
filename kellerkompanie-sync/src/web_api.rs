@@ -46,7 +46,6 @@ pub fn get_addon_uuid(addon_name: &String) -> String {
         addon_uuid_url = format!("{}{}", addon_uuid_url, "/");
     }
     addon_uuid_url = format!("{}{}{}", addon_uuid_url, "addon/", addon_name);
-    println!("requesting to {}", addon_uuid_url);
 
     let mut res = reqwest::get(&addon_uuid_url).unwrap();
     let body = res.text().unwrap();
