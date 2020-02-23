@@ -240,7 +240,7 @@ impl FilesCache {
         }
     }
 
-    fn create_addon_index(&mut self, addon_name: &String) {
+    fn create_addon_index(&mut self, addon_name: &String) -> bool {
         if !self.map.contains_key(addon_name) {
             let uuid = web_api::get_addon_uuid(&addon_name);
 
@@ -253,7 +253,11 @@ impl FilesCache {
                     files: HashMap::new(),
                 },
             );
+
+            return true;
         }
+
+        false
     }
 
     fn get_addon_index(&mut self, addon_name: &String) -> &mut LocalAddon {
@@ -274,14 +278,19 @@ fn index_directory(directory: &str, index: &mut FilesCache, settings: &Settings)
     let mut progress_bar = ProgressBar::new(files.len() as u64);
     progress_bar.format("[=> ]");
 
+    let mut updated_addons = HashMap::new();
+
     // create entries for addons if not yet in index
     for dir_entry in files {
         let absolute_filepath = dir_entry.path().display().to_string();
         let relative_filepath = extract_relative_filepath(&absolute_filepath);
         let addon_name = extract_addon_name(&relative_filepath);
-        index.create_addon_index(&addon_name);
+        let new_entry_created = index.create_addon_index(&addon_name);
 
         let addon_index = index.get_addon_index(&addon_name);
+        if new_entry_created {
+            updated_addons.insert(format!("{}", &addon_index.uuid), format!("{}", &addon_index.version));
+        }
 
         let metadata = fs::metadata(dir_entry.path()).unwrap();
         let filesize = metadata.len();
@@ -314,10 +323,13 @@ fn index_directory(directory: &str, index: &mut FilesCache, settings: &Settings)
             };
 
             addon_index.add_file_index(file_index);
+            updated_addons.insert(format!("{}", &addon_index.uuid), format!("{}", &addon_index.version));
         }
 
         progress_bar.inc();
     }
+
+    web_api::update_addons(updated_addons);
 
     let duration: Duration = start.elapsed();
     println!("Time elapsed: {:?}", duration);

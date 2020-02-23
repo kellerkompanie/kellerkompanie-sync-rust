@@ -1,8 +1,9 @@
 extern crate reqwest;
 
-use std::collections::HashMap;
+use std::collections::{HashMap};
 
 use serde::{Deserialize, Serialize};
+use serde_json::json;
 
 use crate::settings::load_settings;
 
@@ -14,28 +15,6 @@ pub struct AddonInfo {
     addon_id: u64,
     addon_uuid: String,
     addon_version: String,
-}
-
-pub fn get_addons() -> Vec<AddonInfo> {
-    let settings = load_settings();
-
-    let mut addons_url = settings.api_url;
-    if !addons_url.ends_with("/") {
-        addons_url = format!("{}{}", addons_url, "/");
-    }
-    addons_url = format!("{}{}", addons_url, "addons");
-    println!("requesting to {}", addons_url);
-    let mut res = reqwest::get(&addons_url).unwrap();
-    let body = res.text().unwrap();
-
-    let addons: Vec<AddonInfo> = match serde_json::from_str(&body) {
-        Ok(addons) => addons,
-        Err(error) => {
-            panic!("Problem parsing the config file: {:?}", error)
-        }
-    };
-
-    addons
 }
 
 pub fn get_addon_uuid(addon_name: &String) -> String {
@@ -58,4 +37,24 @@ pub fn get_addon_uuid(addon_name: &String) -> String {
     };
 
     result.get("uuid").unwrap().clone()
+}
+
+pub fn update_addons(updated_addons: HashMap<String, String>) {
+    let settings = load_settings();
+
+    let mut addon_uuid_url = settings.api_url;
+    if !addon_uuid_url.ends_with("/") {
+        addon_uuid_url = format!("{}{}", addon_uuid_url, "/");
+    }
+    addon_uuid_url = format!("{}{}", addon_uuid_url, "update_addons");
+
+    let client = reqwest::Client::new();
+    let _response = match client.post(&addon_uuid_url)
+        .body(format!("{}", json!(updated_addons)))
+        .send() {
+        Ok(response) => response,
+        Err(error) => {
+            panic!("Problem updating updates through API: {:?}", error)
+        }
+    };
 }
