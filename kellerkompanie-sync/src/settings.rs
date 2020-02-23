@@ -9,10 +9,7 @@ use serde_json::json;
 #[derive(Serialize, Deserialize)]
 #[derive(Debug)]
 pub struct Settings {
-    pub(crate) db_host: String,
-    pub(crate) db_name: String,
-    pub(crate) db_username: String,
-    pub(crate) db_password: String,
+    pub(crate) api_url: String,
     pub(crate) observed_directories: Vec<String>,
     pub(crate) follow_links: bool,
     pub(crate) ignore_hidden: bool,
@@ -59,10 +56,7 @@ pub fn load_settings() -> Settings {
         };
     } else {
         settings = Settings {
-            db_host: String::from("localhost"),
-            db_name: String::from("database"),
-            db_username: String::from("username"),
-            db_password: String::from("password"),
+            api_url: String::from("https://localhost:5000/"),
             observed_directories: Vec::new(),
             follow_links: false,
             ignore_hidden: false,
