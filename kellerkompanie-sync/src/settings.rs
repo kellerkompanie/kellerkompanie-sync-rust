@@ -5,15 +5,28 @@ use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 use serde_json::json;
+use glob::Pattern;
 
 #[derive(Serialize, Deserialize)]
 #[derive(Debug)]
 pub struct Settings {
     pub(crate) api_url: String,
-    pub(crate) observed_directories: Vec<String>,
+    pub(crate) directory: String,
     pub(crate) follow_links: bool,
     pub(crate) ignore_hidden: bool,
     pub(crate) ignore_files: Vec<String>,
+}
+
+impl Settings {
+    pub fn get_ignore_patterns(&self) -> Vec<Pattern> {
+        let mut ignore_patterns = Vec::new();
+        for pattern in &self.ignore_files {
+            let ignore_pattern = Pattern::new(pattern.as_str()).unwrap();
+            ignore_patterns.push(ignore_pattern);
+        }
+
+        ignore_patterns
+    }
 }
 
 const CONFIG_FILE: &'static str = "config.json";
@@ -56,8 +69,8 @@ pub fn load_settings() -> Settings {
         };
     } else {
         settings = Settings {
-            api_url: String::from("https://localhost:5000/"),
-            observed_directories: Vec::new(),
+            api_url: String::from("https://server.kellerkompanie.com:5000/"),
+            directory: String::from("/home/arma3server/serverfiles/mods"),
             follow_links: false,
             ignore_hidden: false,
             ignore_files: Vec::new(),
