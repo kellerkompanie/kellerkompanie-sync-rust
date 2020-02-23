@@ -48,9 +48,10 @@ pub fn update_addons(updated_addons: HashMap<String, String>) {
     }
     addon_uuid_url = format!("{}{}", addon_uuid_url, "update_addons");
 
+    let params = [("updated_addons", format!("{}", json!(updated_addons)))];
     let client = reqwest::Client::new();
     let _response = match client.post(&addon_uuid_url)
-        .body(format!("{}", json!(updated_addons)))
+        .form(&params)
         .send() {
         Ok(response) => response,
         Err(error) => {
