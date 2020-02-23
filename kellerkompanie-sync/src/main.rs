@@ -107,7 +107,6 @@ fn index_directory(directory: &str, index: &mut HashMap<String, AddonIndex>, set
         let mut ignore_file = false;
         for ignore_pattern in &ignore_patterns {
             if ignore_pattern.matches(dir_entry.file_name().to_str().unwrap()) {
-                println!("Ignoring file {}", dir_entry.path().display());
                 ignore_file = true;
                 break;
             }
