@@ -54,7 +54,7 @@ pub fn get_addon_uuid(addon_name: &String) -> String {
     let result: HashMap<String, String> = match serde_json::from_str(&body) {
         Ok(uuid) => uuid,
         Err(error) => {
-            panic!("Problem parsing the response: {:?}", error)
+            panic!("Problem parsing the response: {:?}, the response was {:?}", error, body)
         }
     };
 
