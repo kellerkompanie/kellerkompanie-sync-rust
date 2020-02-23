@@ -167,8 +167,6 @@ fn index_directory(directory: &str, index: &mut HashMap<String, AddonIndex>, set
 
 
 fn main() {
-    println!("{:?}", web_api::get_addons());
-
     let settings = settings::load_settings();
     let mut index = HashMap::new();
 
