@@ -1,12 +1,11 @@
 extern crate reqwest;
 
-use std::collections::{HashMap};
+use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
 use crate::settings::{load_settings, Settings};
-use crate::FileIndex;
 
 #[derive(Debug)]
 #[derive(Serialize, Deserialize)]
