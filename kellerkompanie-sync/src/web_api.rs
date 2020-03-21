@@ -76,8 +76,8 @@ pub fn get_addon_groups(settings: &Settings) -> Vec<WebAddonGroup> {
     addon_groups_url = format!("{}{}", addon_groups_url, "addon_group/");
 
     let mut addon_groups: Vec<WebAddonGroup> = Vec::new();
-    for addonGroupInfo in addon_group_infos {
-        let addon_group_uuid = addonGroupInfo.addon_group_uuid;
+    for addon_group_info in addon_group_infos {
+        let addon_group_uuid = addon_group_info.addon_group_uuid;
         let mut res = reqwest::get(&format!("{}{}", addon_groups_url, addon_group_uuid)).unwrap();
         let body = res.text().unwrap();
 
