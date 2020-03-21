@@ -18,6 +18,7 @@ use serde_json::json;
 use walkdir::{DirEntry, WalkDir};
 
 use settings::Settings;
+use crate::web_api::WebAddonGroup;
 
 mod hashing;
 mod settings;
@@ -140,7 +141,14 @@ struct AddonFile {
     file_hash: String,
 }
 
-fn save_index(files_cache: &FilesCache) {
+#[derive(Serialize, Deserialize)]
+#[derive(Debug)]
+struct Index {
+    files_index: HashMap<String, Addon>,
+    addon_groups: Vec<WebAddonGroup>,
+}
+
+fn save_index(files_cache: &FilesCache, settings: &Settings) {
     let mut files_index = HashMap::new();
 
     for (_, local_addon) in files_cache.map.iter() {
@@ -168,7 +176,13 @@ fn save_index(files_cache: &FilesCache) {
         files_index.insert(addon_name, addon);
     }
 
-    let json = json!(files_index);
+    let addon_groups = web_api::get_addon_groups(&settings);
+    let index = Index {
+        files_index,
+        addon_groups,
+    };
+
+    let json = json!(index);
 
     let mut file = match File::create(INDEX_FILE) {
         Ok(file) => file,
@@ -240,9 +254,9 @@ impl FilesCache {
         }
     }
 
-    fn create_addon_index(&mut self, addon_name: &String) -> bool {
+    fn create_addon_index(&mut self, addon_name: &String, settings: &Settings) -> bool {
         if !self.map.contains_key(addon_name) {
-            let uuid = web_api::get_addon_uuid(&addon_name);
+            let uuid = web_api::get_addon_uuid(&addon_name, settings);
 
             self.map.insert(
                 addon_name.clone(),
@@ -285,7 +299,7 @@ fn index_directory(directory: &str, index: &mut FilesCache, settings: &Settings)
         let absolute_filepath = dir_entry.path().display().to_string();
         let relative_filepath = extract_relative_filepath(&absolute_filepath);
         let addon_name = extract_addon_name(&relative_filepath);
-        let new_entry_created = index.create_addon_index(&addon_name);
+        let new_entry_created = index.create_addon_index(&addon_name, &settings);
 
         let addon_index = index.get_addon_index(&addon_name);
         if new_entry_created {
@@ -341,6 +355,6 @@ fn main() {
     let map = load_filecache();
     let mut index = FilesCache { map };
     index_directory(&settings.directory, &mut index, &settings);
-    save_index(&index);
+    save_index(&index, &settings);
     save_filecache(index);
 }
