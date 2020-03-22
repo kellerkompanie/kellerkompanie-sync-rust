@@ -144,12 +144,12 @@ struct AddonFile {
 #[derive(Serialize, Deserialize)]
 #[derive(Debug)]
 struct Index {
-    files_index: HashMap<String, Addon>,
+    files_index: Vec<(String, Addon)>,
     addon_groups: Vec<WebAddonGroup>,
 }
 
 fn save_index(files_cache: &FilesCache, settings: &Settings) {
-    let mut files_index = HashMap::new();
+    let mut files_index = Vec::new();
 
     for (_, local_addon) in files_cache.map.iter() {
         let addon_name = format!("{}", local_addon.name);
@@ -173,7 +173,7 @@ fn save_index(files_cache: &FilesCache, settings: &Settings) {
             addon_files,
         };
 
-        files_index.insert(addon_name, addon);
+        files_index.push((addon_name, addon));
     }
 
     let addon_groups = web_api::get_addon_groups(&settings);
