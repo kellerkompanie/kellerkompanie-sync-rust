@@ -12,7 +12,7 @@ use crate::settings::{load_settings, Settings};
 pub struct WebAddon {
     addon_name: String,
     addon_foldername: String,
-    addon_uuid: String,
+    pub(crate) addon_uuid: String,
     addon_version: String,
 }
 
@@ -25,11 +25,11 @@ pub struct WebAddonGroupInfo {
 #[derive(Debug)]
 #[derive(Serialize, Deserialize)]
 pub struct WebAddonGroup {
-    addon_group_name: String,
-    addon_group_author: String,
-    addon_group_uuid: String,
-    addon_group_version: String,
-    addons: Vec<WebAddon>,
+    pub(crate) addon_group_name: String,
+    pub(crate) addon_group_author: String,
+    pub(crate) addon_group_uuid: String,
+    pub(crate) addon_group_version: String,
+    pub(crate) addons: Vec<WebAddon>,
 }
 
 pub fn get_addon_uuid(addon_name: &String, settings: &Settings) -> String {

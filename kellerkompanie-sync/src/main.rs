@@ -18,7 +18,6 @@ use serde_json::json;
 use walkdir::{DirEntry, WalkDir};
 
 use settings::Settings;
-use crate::web_api::WebAddonGroup;
 
 mod hashing;
 mod settings;
@@ -127,25 +126,35 @@ fn save_filecache(index: FilesCache) {
 #[derive(Serialize, Deserialize)]
 #[derive(Debug)]
 struct Addon {
-    addon_name: String,
-    addon_uuid: String,
-    addon_version: String,
-    addon_files: HashMap<String, AddonFile>,
+    name: String,
+    uuid: String,
+    version: String,
+    files: HashMap<String, AddonFile>,
 }
 
 #[derive(Serialize, Deserialize)]
 #[derive(Debug)]
 struct AddonFile {
-    file_path: String,
-    file_size: u64,
-    file_hash: String,
+    path: String,
+    size: u64,
+    hash: String,
+}
+
+#[derive(Serialize, Deserialize)]
+#[derive(Debug)]
+struct AddonGroup {
+    name: String,
+    author: String,
+    uuid: String,
+    version: String,
+    addons: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize)]
 #[derive(Debug)]
 struct Index {
     files_index: HashMap<String, Addon>,
-    addon_groups: Vec<WebAddonGroup>,
+    addon_groups: Vec<AddonGroup>,
 }
 
 fn save_index(files_cache: &FilesCache, settings: &Settings) {
@@ -159,24 +168,41 @@ fn save_index(files_cache: &FilesCache, settings: &Settings) {
 
         for (_, file_index) in local_addon.files.iter() {
             let addon_file = AddonFile {
-                file_path: format!("{}", file_index.relative_filepath),
-                file_size: file_index.filesize,
-                file_hash: format!("{}", file_index.hash),
+                path: format!("{}", file_index.relative_filepath),
+                size: file_index.filesize,
+                hash: format!("{}", file_index.hash),
             };
             addon_files.insert(format!("{}", file_index.relative_filepath), addon_file);
         }
 
         let addon = Addon {
-            addon_name: format!("{}", addon_name),
-            addon_uuid,
-            addon_version,
-            addon_files,
+            name: format!("{}", addon_name),
+            uuid: format!("{}", addon_uuid),
+            version: addon_version,
+            files: addon_files,
         };
 
-        files_index.insert(addon_name, addon);
+        files_index.insert(addon_uuid, addon);
     }
 
-    let addon_groups = web_api::get_addon_groups(&settings);
+    let web_addon_groups = web_api::get_addon_groups(&settings);
+    let mut addon_groups = Vec::new();
+    for web_addon_group in web_addon_groups {
+        let mut addons = Vec::new();
+        for web_addon in web_addon_group.addons {
+            addons.push(web_addon.addon_uuid);
+        }
+
+        let addon_group = AddonGroup {
+            name: web_addon_group.addon_group_name,
+            author: web_addon_group.addon_group_author,
+            uuid: web_addon_group.addon_group_uuid,
+            version: web_addon_group.addon_group_version,
+            addons,
+        };
+        addon_groups.push(addon_group);
+    }
+
     let index = Index {
         files_index,
         addon_groups,
