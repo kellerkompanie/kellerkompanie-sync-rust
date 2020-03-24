@@ -190,7 +190,15 @@ fn save_index(files_cache: &FilesCache, settings: &Settings) {
     for web_addon_group in web_addon_groups {
         let mut addons = Vec::new();
         for web_addon in web_addon_group.addons {
-            addons.push(web_addon.addon_uuid);
+            let uuid = &web_addon.addon_uuid;
+            if files_index.contains_key(uuid.as_str()) {
+                addons.push(web_addon.addon_uuid);
+            } else {
+                eprintln!("Warning: addon group {} contains missing addon {} {}",
+                          web_addon_group.addon_group_name,
+                          web_addon.addon_name,
+                          web_addon.addon_uuid);
+            }
         }
 
         let addon_group = AddonGroup {

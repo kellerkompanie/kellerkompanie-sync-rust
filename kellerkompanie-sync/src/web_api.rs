@@ -10,7 +10,7 @@ use crate::settings::{load_settings, Settings};
 #[derive(Debug)]
 #[derive(Serialize, Deserialize)]
 pub struct WebAddon {
-    addon_name: String,
+    pub(crate) addon_name: String,
     addon_foldername: String,
     pub(crate) addon_uuid: String,
     addon_version: String,
