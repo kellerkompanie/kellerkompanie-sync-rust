@@ -5,7 +5,6 @@ use std::io::{BufReader, Read};
 
 use data_encoding::HEXUPPER;
 use ring::digest::{Context, Digest, SHA256};
-use walkdir::DirEntry;
 
 pub fn hash_file(path: &String) -> String {
     let input = match File::open(path) {

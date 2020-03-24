@@ -350,9 +350,6 @@ fn index_directory(directory: &str, index: &mut FilesCache, settings: &Settings)
     println!("Time elapsed: {:?}", duration);
 }
 
-use ring::digest::{Context, Digest, SHA256};
-use data_encoding::HEXUPPER;
-
 fn main() {
     let settings = settings::load_settings();
     let map = load_filecache();
