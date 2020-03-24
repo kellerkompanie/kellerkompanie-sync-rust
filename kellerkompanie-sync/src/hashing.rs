@@ -7,12 +7,11 @@ use data_encoding::HEXUPPER;
 use ring::digest::{Context, Digest, SHA256};
 use walkdir::DirEntry;
 
-pub fn hash_file(dir_entry: &DirEntry) -> String {
-    let path = dir_entry.path().display().to_string();
+pub fn hash_file(path: &String) -> String {
     let input = match File::open(path) {
         Ok(file) => file,
         Err(error) => {
-            panic!("Problem opening file {}: {:?}", dir_entry.path().display(), error)
+            panic!("Problem opening file {}: {:?}", path, error)
         }
     };
     let reader = BufReader::new(input);

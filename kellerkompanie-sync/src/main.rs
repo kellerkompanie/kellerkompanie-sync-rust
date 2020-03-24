@@ -326,7 +326,8 @@ fn index_directory(directory: &str, index: &mut FilesCache, settings: &Settings)
         }
 
         if create_file_index {
-            let hash = hashing::hash_file(&dir_entry);
+            let path = dir_entry.path().display().to_string();
+            let hash = hashing::hash_file(&path);
 
             let file_index = FileIndex {
                 relative_filepath,
@@ -349,12 +350,33 @@ fn index_directory(directory: &str, index: &mut FilesCache, settings: &Settings)
     println!("Time elapsed: {:?}", duration);
 }
 
+use ring::digest::{Context, Digest, SHA256};
+use data_encoding::HEXUPPER;
 
 fn main() {
-    let settings = settings::load_settings();
+    /*let mut context = Context::new(&SHA256);
+    let mut buffer = [0; 2];
+    buffer[0] = 0xFF;
+    buffer[1] = 0x12;
+
+    loop {
+        context.update(&buffer[..2]);
+        break;
+    }
+
+    let digest = context.finish();
+
+    println!("{:?}", HEXUPPER.encode(digest.as_ref()));*/
+
+    //let path = String::from("E:\\kellerkompanie-main\\@CUP_Terrains_Core\\addons\\cup_terrains_ca_buildings.pbo");
+    let path = String::from("/home/arma3server/serverfiles/mods/@CUP_Terrains_Core/addons/cup_terrains_ca_buildings.pbo");
+    let hash = hashing::hash_file(&path);
+    println!("{:?}", hash);
+
+    /*let settings = settings::load_settings();
     let map = load_filecache();
     let mut index = FilesCache { map };
     index_directory(&settings.directory, &mut index, &settings);
     save_index(&index, &settings);
-    save_filecache(index);
+    save_filecache(index);*/
 }
