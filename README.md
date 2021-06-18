@@ -63,20 +63,52 @@ The index.json in turn is used by the kekosync client to determine which files a
 
 
 ## Build
-1. Clone the repository `git clone https://github.com/kellerkompanie/kellerkompanie-sync-rust.git`
-2. `cd kellerkompanie-sync-rust/kellerkompanie-sync`
-3. `cargo build`
+```bash
+su - arma3server
+cd /home/arma3server/
+git clone https://github.com/kellerkompanie/kellerkompanie-sync-rust.git
+cd kellerkompanie-sync-rust/kellerkompanie-sync
+cargo build
+```
 
 
 ## Running
 1. Create a script, e.g., `run-kekosync.sh` with the following contents:
 ```bash
-cd kellerkompanie-sync-rust/kellerkompanie-sync
+#!/bin/bash
+
+source /home/arma3server/.cargo/env
+cd /home/arma3server/kellerkompanie-sync-rust/kellerkompanie-sync
 git pull
 cargo run
 ```
 2. Make the script executable using `chmod +x run-kekosync.sh`
 3. Run script by invoking `./run-kekosync.sh`
+
+## Adjusting the config
+You can adjust the config by editing the `config.json` file that will be created after the first run:
+```bash
+nano kellerkompanie-sync-rust/kellerkompanie-sync/config.json
+```
+The default config looks like this:
+```json
+{
+  "api_url": "https://server.kellerkompanie.com:5000/",
+  "directory": "/home/arma3server/serverfiles/mods",
+  "follow_links": false,
+  "ignore_files": [],
+  "ignore_hidden": false
+}
+```
+You probably want to add `.zsync` files to the list of ignored files:
+```json
+{
+    ...
+    "ignore_files": ["*.zsync"],
+    ...
+}
+```
+
 
 ## Publishing the index.json
 This installation assumes that the Kellerkompanie server is running at `http://server.kellerkompanie.com/` and that the index.json file will be accessible as `http://server.kellerkompanie.com/repository/index.json`.
