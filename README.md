@@ -24,8 +24,8 @@ CREATE TABLE IF NOT EXISTS addon (
     addon_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     addon_uuid CHAR(36) NOT NULL,
     addon_version CHAR(15) NOT NULL,
-    addon_foldername VARCHAR(64) NOT NULL,
-    addon_name VARCHAR(64) NOT NULL,
+    addon_foldername VARCHAR(128) NOT NULL,
+    addon_name VARCHAR(128) NOT NULL,
     CONSTRAINT uuid_unique UNIQUE (addon_uuid),
     CONSTRAINT foldername_unique UNIQUE (addon_foldername)
 )
@@ -37,8 +37,8 @@ CREATE TABLE IF NOT EXISTS addon_group (
     addon_group_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     addon_group_uuid CHAR(36) NOT NULL,
     addon_group_version CHAR(15) NOT NULL,
-    addon_group_name VARCHAR(64) NOT NULL,
-    addon_group_author VARCHAR(64) NOT NULL,
+    addon_group_name VARCHAR(128) NOT NULL,
+    addon_group_author VARCHAR(128) NOT NULL,
     CONSTRAINT uuid_unique UNIQUE (addon_group_uuid),
     CONSTRAINT foldername_unique UNIQUE (addon_group_name)
 )
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS addon_dependency (
 
 CREATE TABLE IF NOT EXISTS addon_category (
     addon_category_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    addon_category_name VARCHAR(64) NOT NULL,
+    addon_category_name VARCHAR(128) NOT NULL,
     CONSTRAINT addon_category_name_unique UNIQUE (addon_category_name)
 )
 CHARACTER SET 'utf8'
