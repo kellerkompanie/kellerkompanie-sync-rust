@@ -78,6 +78,15 @@ cargo run
 2. Make the script executable using `chmod +x run-kekosync.sh`
 3. Run script by invoking `./run-kekosync.sh`
 
+## Publishing the index.json
+This installation assumes that the Kellerkompanie server is running at `http://server.kellerkompanie.com/` and that the index.json file will be accessible as `http://server.kellerkompanie.com/repository/index.json`.
+
+For this to work you will need to make sure to have the `index.json` available in the webserver:
+```bash
+cd /var/www/html/repository
+ln -s /home/arma3server/kellerkompanie-sync-rust/kellerkompanie-sync/index.json
+```
+
 
 ## SQL table definitions
 ```sql
