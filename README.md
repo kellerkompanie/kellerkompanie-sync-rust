@@ -166,6 +166,15 @@ CREATE TABLE IF NOT EXISTS addon_dependency (
     CONSTRAINT dependency_unique UNIQUE (addon_id,addon_dependency)
 );
 
+
+CREATE TABLE IF NOT EXISTS addon_meta (
+    addon_id INT NOT NULL,
+    addon_steamid INT NOT NULL,
+    FOREIGN KEY (addon_id) REFERENCES addon(addon_id),
+    CONSTRAINT meta_unique UNIQUE (addon_id)
+);
+
+
 CREATE TABLE IF NOT EXISTS addon_category (
     addon_category_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     addon_category_name VARCHAR(128) NOT NULL,
