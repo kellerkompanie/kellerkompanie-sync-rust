@@ -34,6 +34,7 @@ fn extract_addon_name(relative_filepath: &String) -> String {
     let index = relative_filepath.find(MAIN_SEPARATOR).unwrap_or(0);
     let (addon_name, _) = relative_filepath.split_at(index);
 
+    println!("main::extract_addon_name(relative_filepath='{}') -> '{}'", relative_filepath, String::from(addon_name));
     String::from(addon_name)
 }
 
