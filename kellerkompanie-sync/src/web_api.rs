@@ -33,6 +33,8 @@ pub struct WebAddonGroup {
 }
 
 pub fn get_addon_uuid(addon_name: &String, settings: &Settings) -> String {
+    info!("web_api::get_addon_uuid(addon_name='{:?}'", addon_name);
+
     let mut addon_uuid_url = settings.api_url.clone();
     if !addon_uuid_url.ends_with("/") {
         addon_uuid_url = format!("{}{}", addon_uuid_url, "/");
